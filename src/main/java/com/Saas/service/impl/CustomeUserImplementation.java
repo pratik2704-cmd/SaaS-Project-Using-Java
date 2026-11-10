@@ -20,6 +20,10 @@ public class CustomeUserImplementation implements UserDetailsService{
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	 public CustomeUserImplementation(UserRepository userRepository) {
+	        this.userRepository = userRepository;
+	    }
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

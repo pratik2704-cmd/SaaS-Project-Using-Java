@@ -6,6 +6,8 @@ import com.Saas.domain.UserRole;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -23,6 +25,7 @@ import lombok.Setter;
 public class User {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
 	@Column(nullable = false)

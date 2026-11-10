@@ -1,10 +1,13 @@
 package com.Saas.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +27,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService{
 	
-	private UserRepository userRepository;
-	private final PasswordEncoder passwordEncoder = null;
-	private final JwtProvider jwtProvider = new JwtProvider();
-	private final CustomeUserImplementation customeUserImplementation = new CustomeUserImplementation();
+	private  UserRepository userRepository;
+	private  PasswordEncoder passwordEncoder;
+	private  JwtProvider jwtProvider = new JwtProvider();
+	private  CustomeUserImplementation customeUserImplementation;
+	
+	public AuthServiceImpl(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            CustomeUserImplementation customeUserImplementation) {
+
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.customeUserImplementation = customeUserImplementation;
+    }
 	
 	@Override
 	public AuthResponse signup(UserDto userDto) throws UserException {
@@ -69,18 +82,48 @@ public class AuthServiceImpl implements AuthService{
 	}
 
 	@Override
-	public AuthResponse login(UserDto userDto) {
+	public AuthResponse login(UserDto userDto) throws UserException {
 		String email = userDto.getEmail();
 		String password = userDto.getPassword();
 		
 		Authentication authentication = authenticate(email, password);
 		
-		return null;
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		
+		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+		
+		String role = authorities.iterator().next().getAuthority();
+		
+		String jwt = jwtProvider.generateToken(authentication);
+		
+		User user = userRepository.findByEmail(email);
+		
+		user.setLastLogin(LocalDateTime.now());
+		userRepository.save(user);
+		
+		AuthResponse authResponse = new AuthResponse();
+		authResponse.setJwt(jwt);
+		authResponse.setMessage("Login Successfully ");
+		authResponse.setUser(UserMapper.toDTO(user));
+		
+		return authResponse;
 	}
 
-	private Authentication authenticate(String email, String password) {
+	private Authentication authenticate(String email, String password) throws UserException {
 		
-		return null;
+		UserDetails userDetails = customeUserImplementation.loadUserByUsername(email);
+		
+		if(userDetails == null) {
+			throw new UserException("Email id doesn't exixt" + email);
+		}
+		
+		if(!passwordEncoder.matches(password, userDetails.getPassword())) {
+			throw new UserException("Password doesn't mathch");
+		}
+		
+		
+		
+		return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 	}
 
 }
