@@ -16,11 +16,15 @@ import com.Saas.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
 	
 	private UserService userService;
+	
+	 public UserController(UserService userService) {
+	        this.userService = userService;
+	    }
 	
 	@GetMapping("/profile")
 	public ResponseEntity<UserDto> getUserProfile(@RequestHeader("Authorization") String jwt) throws UserException{
@@ -30,8 +34,13 @@ public class UserController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<UserDto> getUserById(@PathVariable("id") Long id) throws UserException{
-		User user = userService.getUserFromJwtToken(jwt);
+	public ResponseEntity<UserDto> getUserById(@RequestHeader("Authorization") 
+	String jwt, @PathVariable Long id) throws UserException, Exception{
+		User user = userService.getUserById(id);
+		
+		if(user == null) {
+			throw new UserException("User not found");
+		}
 		
 		return ResponseEntity.ok(UserMapper.toDTO(user));
 	}

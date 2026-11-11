@@ -19,6 +19,11 @@ public class UserServiceImpl implements UserService{
 	
 	private UserRepository userRepository;
 	private JwtProvider jwtProvider;
+	
+	public UserServiceImpl(UserRepository userRepository, JwtProvider jwtProvider) {
+        this.userRepository = userRepository;
+        this.jwtProvider = jwtProvider;
+    }
 
 	@Override
 	public User getUserFromJwtToken(String Token) throws UserException {
@@ -52,8 +57,10 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public User getUserById(long id) {
-		return userRepository.findById(id).orElse(null);
+	public User getUserById(long id) throws UserException, Exception {
+		return userRepository.findById(id).orElseThrow(
+				() -> new Exception("User not found")
+				);
 	}
 
 	@Override
