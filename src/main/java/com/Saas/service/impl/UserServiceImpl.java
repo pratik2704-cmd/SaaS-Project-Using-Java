@@ -1,3 +1,4 @@
+
 package com.Saas.service.impl;
 
 import java.util.List;
@@ -15,58 +16,62 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
-	
-	private UserRepository userRepository;
-	private JwtProvider jwtProvider;
-	
-	public UserServiceImpl(UserRepository userRepository, JwtProvider jwtProvider) {
-        this.userRepository = userRepository;
-        this.jwtProvider = jwtProvider;
+public class UserServiceImpl implements UserService {
+
+    private final UserRepository userRepository;
+    private final JwtProvider jwtProvider;
+
+    @Override
+    public User getUserFromJwtToken(String Token) throws UserException {
+
+        String email = jwtProvider.getEmailFromToken(Token);
+        User user = userRepository.findByEmail(email);
+
+        if (user == null) {
+            throw new UserException("Invalid Token");
+        }
+
+        return user;
     }
 
-	@Override
-	public User getUserFromJwtToken(String Token) throws UserException {
-		
-		String email = jwtProvider.getEmailFromToken(Token);
-		User user = userRepository.findByEmail(email);
-		if(user == null) {
-			throw new UserException("Invalid Token");
-		}
-		
-		return user;
-	}
+    @Override
+    public User getCurrentUser() throws UserException {
 
-	@Override
-	public User getCurrentUser() throws UserException {
-		String email = SecurityContextHolder.getContext().getAuthentication().getName();
-		User user = userRepository.findByEmail(email);
-		if(user == null) {
-			throw new UserException("User not found");
-		}
-		return user;
-	}
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication().getName();
 
-	@Override
-	public User getUserByEmail(String email) throws UserException {
-		User user = userRepository.findByEmail(email);
-		if(user == null) {
-			throw new UserException("User not found");
-		}
-		return user;
-	}
+        User user = userRepository.findByEmail(email);
 
-	@Override
-	public User getUserById(long id) throws UserException, Exception {
-		return userRepository.findById(id).orElseThrow(
-				() -> new Exception("User not found")
-				);
-	}
+        if (user == null) {
+            throw new UserException("User not found");
+        }
 
-	@Override
-	public List<User> getAllUsers() {
-		// TODO Auto-generated method stub
-		return userRepository.findAll();
-	}
+        return user;
+    }
 
+    @Override
+    public User getUserByEmail(String email) throws UserException {
+
+        User user = userRepository.findByEmail(email);
+
+        if (user == null) {
+            throw new UserException("User not found");
+        }
+
+        return user;
+    }
+
+    @Override
+    public User getUserById(long id) throws UserException, Exception {
+
+        return userRepository.findById(id).orElseThrow(
+                () -> new Exception("User not found")
+        );
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+
+        return userRepository.findAll();
+    }
 }

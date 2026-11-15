@@ -1,7 +1,7 @@
+
 package com.Saas.service.impl;
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -21,107 +21,113 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class StoreServiceImpl implements StoreService{
-	
-	private StoreRepository storeRepository;	
-	private UserService userService;
-	
-	
-	public StoreServiceImpl(StoreRepository storeRepository, UserService userService) {
-		super();
-		this.storeRepository = storeRepository;
-		this.userService = userService;
-	}
+public class StoreServiceImpl implements StoreService {
 
+    private final StoreRepository storeRepository;
+    private final UserService userService;
 
+    @Override
+    public StoreDTO createStore(StoreDTO storeDto, User user) {
+        Store store = StoreMapper.toEntity(storeDto, user);
+        return StoreMapper.toDto(storeRepository.save(store));
+    }
 
-	@Override
-	public StoreDTO createStore(StoreDTO storeDto, User user) {
-		Store store = StoreMapper.toEntity(storeDto, user);
-		return StoreMapper.toDto(storeRepository.save(store));
-	}
+    @Override
+    public StoreDTO getStoreById(Long id) throws Exception {
+        Store store = storeRepository.findById(id).orElseThrow(
+                () -> new Exception("Store not found...")
+        );
+        return StoreMapper.toDto(store);
+    }
 
-	@Override
-	public StoreDTO getStoreById(Long id) throws Exception {
-		Store store = storeRepository.findById(id).orElseThrow(
-				() -> new Exception("Store not found...")
-				);
-		return StoreMapper.toDto(store);
-	}
+    @Override
+    public List<StoreDTO> getAllStore() {
+        List<Store> dtos = storeRepository.findAll();
 
-	@Override
-	public List<StoreDTO> getAllStore() {
-		List<Store> dtos = storeRepository.findAll();
-		
-		return dtos.stream().map(StoreMapper::toDto).collect(Collectors.toList());
-	}
+        return dtos.stream()
+                .map(StoreMapper::toDto)
+                .collect(Collectors.toList());
+    }
 
-	@Override
-	public Store getStoreByAdmin() throws UserException {
-		User admin = userService.getCurrentUser();
-		return storeRepository.findByStoreAdminId(admin.getId());
-	}
+    @Override
+    public Store getStoreByAdmin() throws UserException {
+        User admin = userService.getCurrentUser();
+        return storeRepository.findByStoreAdminId(admin.getId());
+    }
 
-	@Override
-	public StoreDTO updateStore(Long id, StoreDTO storeDto) throws UserException {
-		User currentUser = userService.getCurrentUser();
-		Store existing = storeRepository.findByStoreAdminId(currentUser.getId());
-		if(existing == null) {
-			throw new UserException("Store not found");
-		}
-		
-		existing.setBrand(storeDto.getBrand());
-		existing.setDescription(storeDto.getDescription());
-		
-		if(storeDto.getStoreType() != null) {
-			existing.setStoreType(storeDto.getStoreType());
-		}
-		
-		if(storeDto.getContact() != null) {
-			if (storeDto.getContact() != null) {
+    @Override
+    public StoreDTO updateStore(Long id, StoreDTO storeDto) throws UserException {
+        User currentUser = userService.getCurrentUser();
+        Store existing = storeRepository.findByStoreAdminId(currentUser.getId());
 
-			    StoreContact contact = StoreContact.builder()
-			            .address(storeDto.getContact().getAddress())
-			            .phone(storeDto.getContact().getPhone())
-			            .email(storeDto.getContact().getEmail())
-			            .build();
+        if (existing == null) {
+            throw new UserException("Store not found");
+        }
 
-			    existing.setContact(contact);
-			}
-		}
-		Store updatedStore = storeRepository.save(existing);
-		return StoreMapper.toDto(updatedStore);
-	}
+        existing.setBrand(storeDto.getBrand());
+        existing.setDescription(storeDto.getDescription());
 
-	@Override
-	public void deleteStore(Long id) throws UserException {
-		Store store = getStoreByAdmin();
-		
-		storeRepository.delete(store);
-	}
+        if (storeDto.getStoreType() != null) {
+            existing.setStoreType(storeDto.getStoreType());
+        }
 
-	@Override
-	public StoreDTO getStoreByEmployee() throws UserException {
-		User currentUser = userService.getCurrentUser();
-		
-		if(currentUser == null) {
-			throw new UserException("you don't have permission to access this store");
-		}
-		return StoreMapper.toDto(currentUser.getStore());
-	}
+        if (storeDto.getContact() != null) {
+            if (storeDto.getContact() != null) {
 
+                StoreContact contact = StoreContact.builder()
+                        .address(storeDto.getContact().getAddress())
+                        .phone(storeDto.getContact().getPhone())
+                        .email(storeDto.getContact().getEmail())
+                        .build();
 
+                existing.setContact(contact);
+            }
+        }
 
-	@Override
-	public StoreDTO moderateStore(Long id, StoreStatus status) throws Exception {
-		
-		Store store = storeRepository.findById(id).orElseThrow(
-				() -> new Exception("Store not found...")
-				);
-		
-		store.setStatus(status);
-		Store updatedStore = storeRepository.save(store);
-		return StoreMapper.toDto(updatedStore);
-	}
+        Store updatedStore = storeRepository.save(existing);
+        return StoreMapper.toDto(updatedStore);
+    }
 
+    @Override
+    public void deleteStore(Long id) throws UserException {
+        Store store = getStoreByAdmin();
+
+        storeRepository.delete(store);
+    }
+
+    @Override
+    public StoreDTO getStoreByEmployee() throws UserException {
+
+        // Get currently logged-in employee
+        User currentUser = userService.getCurrentUser();
+
+        if (currentUser == null) {
+            throw new UserException("User not found or not authenticated");
+        }
+
+        // Get employee's assigned store
+        Store store = currentUser.getStore();
+
+        if (store == null) {
+            throw new UserException(
+                "No store assigned to this employee. Please contact admin."
+            );
+        }
+
+        // Convert Store entity into DTO
+        return StoreMapper.toDto(store);
+    }
+
+    @Override
+    public StoreDTO moderateStore(Long id, StoreStatus status) throws Exception {
+
+        Store store = storeRepository.findById(id).orElseThrow(
+                () -> new Exception("Store not found...")
+        );
+
+        store.setStatus(status);
+        Store updatedStore = storeRepository.save(store);
+
+        return StoreMapper.toDto(updatedStore);
+    }
 }

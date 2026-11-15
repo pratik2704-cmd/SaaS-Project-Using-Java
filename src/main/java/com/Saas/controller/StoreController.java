@@ -1,8 +1,10 @@
+
 package com.Saas.controller;
 
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.Saas.domain.StoreStatus;
 import com.Saas.exceptions.UserException;
 import com.Saas.mapper.StoreMapper;
-import com.Saas.model.Store;
 import com.Saas.model.User;
 import com.Saas.payload.dto.StoreDTO;
 import com.Saas.payload.response.ApiResponse;
@@ -27,91 +28,103 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/store")
+@RequestMapping("/api/stores")
 public class StoreController {
-	
-	private StoreService storeService;
-	private UserService userService;
-	
-	public StoreController(StoreService storeService, UserService userService) {
-		super();
-		this.storeService = storeService;
-		this.userService = userService;
-	}
 
-	
-	@PostMapping
-	public ResponseEntity<StoreDTO> createStore(@RequestBody StoreDTO storeDTO, 
-			@RequestHeader("Authorization") String jwt) throws UserException{
-		
-		User user = userService.getUserFromJwtToken(jwt);
-		return ResponseEntity.ok(storeService.createStore(storeDTO, user));
-		
-	}
-	
-	
-	@GetMapping("/{id}")
-	public ResponseEntity<StoreDTO> getStoreById(
-			@PathVariable Long id,
-			@RequestHeader("Authorization") String jwt) throws Exception{
+    // Dependency Injection
+    private final StoreService storeService;
+    private final UserService userService;
 
-		return ResponseEntity.ok(storeService.getStoreById(id));
-	}
-	
-	
-	@GetMapping()
-	public ResponseEntity<List<StoreDTO>> getAllStore(
-			@RequestHeader("Authorization") String jwt) throws Exception{
+    // CREATE STORE
+    @PostMapping
+    public ResponseEntity<StoreDTO> createStore(
+            @RequestBody StoreDTO storeDTO,
+            @RequestHeader("Authorization") String jwt)
+            throws UserException {
 
-		return ResponseEntity.ok(storeService.getAllStore());
-	}
+        User user = userService.getUserFromJwtToken(jwt);
 
-	
-	@GetMapping("/admin")
-	public ResponseEntity<StoreDTO> getStoreByAdmin(
-			@RequestHeader("Authorization") String jwt) throws Exception{
+        return ResponseEntity.ok(
+                storeService.createStore(storeDTO, user)
+        );
+    }
 
-		return ResponseEntity.ok(StoreMapper.toDto(storeService.getStoreByAdmin()));
-	}
-	
-	
-	@GetMapping("/employee")
-	public ResponseEntity<StoreDTO> getStoreByEmployee(
-			@RequestHeader("Authorization") String jwt) throws Exception{
+    // GET ALL STORES
+    @GetMapping
+    public ResponseEntity<List<StoreDTO>> getAllStore(
+            @RequestHeader("Authorization") String jwt)
+            throws Exception {
 
-		return ResponseEntity.ok(storeService.getStoreByEmployee());
-	}
-	
-	
-	@PutMapping("/{id}")
-	public ResponseEntity<StoreDTO> updateStore(@PathVariable Long id,
-			@RequestBody StoreDTO storeDTO
-			) throws UserException
-	{
-		return ResponseEntity.ok(storeService.updateStore(id, storeDTO));
-	}
-	
-	@PutMapping("/{id}/moderate")
-	public ResponseEntity<StoreDTO> moderateStore(
-			@PathVariable Long id,
-			@RequestParam StoreStatus status
-			) throws Exception
-	{
-		return ResponseEntity.ok(storeService.moderateStore(id, status));
-	}
-	
-	
-	@GetMapping("/{id}")
-	public ResponseEntity<ApiResponse> deleteStore(@PathVariable Long id) throws UserException{
-		
-		storeService.deleteStore(id);
-		ApiResponse apiResponse = new ApiResponse();
-		apiResponse.setMessage("store delete Successfully...");
-		return ResponseEntity.ok(apiResponse);
-	}
-	
-	
+        return ResponseEntity.ok(storeService.getAllStore());
+    }
 
+    // GET STORE BY ADMIN
+    @GetMapping("/admin")
+    public ResponseEntity<StoreDTO> getStoreByAdmin(
+            @RequestHeader("Authorization") String jwt)
+            throws Exception {
 
-	
+        return ResponseEntity.ok(
+                StoreMapper.toDto(storeService.getStoreByAdmin())
+        );
+    }
+
+    // GET STORE BY EMPLOYEE
+    @GetMapping("/employee")
+    public ResponseEntity<StoreDTO> getStoreByEmployee(
+            @RequestHeader("Authorization") String jwt)
+            throws Exception {
+
+        return ResponseEntity.ok(storeService.getStoreByEmployee());
+    }
+
+    // UPDATE STORE
+    @PutMapping("/{id}")
+    public ResponseEntity<StoreDTO> updateStore(
+            @PathVariable Long id,
+            @RequestBody StoreDTO storeDTO)
+            throws UserException {
+
+        return ResponseEntity.ok(
+                storeService.updateStore(id, storeDTO)
+        );
+    }
+
+    // MODERATE STORE
+    @PutMapping("/{id}/moderate")
+    public ResponseEntity<StoreDTO> moderateStore(
+            @PathVariable Long id,
+            @RequestParam StoreStatus status)
+            throws Exception {
+
+        return ResponseEntity.ok(
+                storeService.moderateStore(id, status)
+        );
+    }
+
+    // GET STORE BY ID
+    @GetMapping("/{id}")
+    public ResponseEntity<StoreDTO> getStoreById(
+            @PathVariable Long id,
+            @RequestHeader("Authorization") String jwt)
+            throws Exception {
+
+        return ResponseEntity.ok(
+                storeService.getStoreById(id)
+        );
+    }
+
+    // DELETE STORE
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deleteStore(
+            @PathVariable Long id)
+            throws UserException {
+
+        storeService.deleteStore(id);
+
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setMessage("Store deleted successfully...");
+
+        return ResponseEntity.ok(apiResponse);
+    }
 }
