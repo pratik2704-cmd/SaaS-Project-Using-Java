@@ -6,7 +6,7 @@ import com.Saas.payload.dto.ProductDTO;
 
 public class ProductMapper {
 	
-	public ProductDTO toDTODto(Product product) {
+	public static ProductDTO toDTODto(Product product) {
 		return ProductDTO.builder()
 				.id(product.getId())
 				.name(product.getName())
@@ -23,7 +23,7 @@ public class ProductMapper {
 	//			.categoryId(product.)
 	}
 	
-	public Product toEntity(ProductDTO productDTO, Store store) {
+	public static Product toEntity(ProductDTO productDTO, Store store) {
 		return Product.builder()
 				.name(productDTO.getName())
 				.sku(productDTO.getSku())
