@@ -23,6 +23,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class Product {
 	
@@ -44,7 +45,8 @@ public class Product {
 	private String brand;
 	private String image;
 	
-	//private Category category;
+	@ManyToOne
+	private Category category;
 	
 	@ManyToOne
 	private Store store;
