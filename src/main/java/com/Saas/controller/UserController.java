@@ -20,11 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserController {
 	
-	private UserService userService;
-	
-	 public UserController(UserService userService) {
-	        this.userService = userService;
-	    }
+	private final UserService userService;
 	
 	@GetMapping("/profile")
 	public ResponseEntity<UserDto> getUserProfile(@RequestHeader("Authorization") String jwt) throws UserException{

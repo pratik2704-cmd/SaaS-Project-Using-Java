@@ -1,0 +1,17 @@
+$kind: http-request
+url: http://localhost:5000/api/categories
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"name\": \"Grosary\",\r
+
+    \  \"storeId\": 1\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{store manager}}"
+order: 1000

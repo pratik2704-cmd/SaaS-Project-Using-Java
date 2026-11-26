@@ -1,0 +1,17 @@
+$kind: http-request
+url: http://localhost:5000/api/categories/1
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \  \"name\": \"Electronics & Gadgets\",\r
+
+    \  \"storeId\": 1\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{store manager}}"
+order: 3000

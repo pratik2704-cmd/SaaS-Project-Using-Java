@@ -34,7 +34,15 @@ public class BranchServiceImpl implements BranchService{
 
 	    User currentUser = userService.getCurrentUser();
 
+	    if (currentUser == null) {
+	        throw new UserException("User not authenticated");
+	    }
+
 	    Store store = storeRepository.findByStoreAdminId(currentUser.getId());
+
+	    if (store == null) {
+	        throw new UserException("No Store found for logged-in user. Create a Store first.");
+	    }
 
 	    Branch branch = BranchMapper.toEntity(branchDTO, store);
 

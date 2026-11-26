@@ -1,0 +1,29 @@
+$kind: http-request
+url: http://localhost:5000/api/stores
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"brand\": \"Pranit Mart\",\r
+
+    \  \"description\": \"E-commerce store\",\r
+
+    \  \"storeType\": \"Retail\",\r
+
+    \  \"contact\": {\r
+
+    \    \"address\": \"Pune\",\r
+
+    \    \"phone\": \"9999999999\",\r
+
+    \    \"email\": \"store@test.com\"\r
+
+    \  }\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{store manager}}"
+order: 1000

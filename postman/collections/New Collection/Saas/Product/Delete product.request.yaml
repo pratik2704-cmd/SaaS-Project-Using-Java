@@ -1,0 +1,8 @@
+$kind: http-request
+url: http://localhost:5000/api/products/1
+method: DELETE
+auth:
+  type: bearer
+  credentials:
+    token: "{{store manager}}"
+order: 5000

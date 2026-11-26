@@ -1,0 +1,31 @@
+$kind: http-request
+url: http://localhost:5000/api/products/1
+method: PATCH
+body:
+  type: json
+  content: "{\r
+
+    \  \"name\": \"Wireless Mouse Pro\",\r
+
+    \  \"sku\": \"MOUSE-001\",\r
+
+    \  \"description\": \"Rechargeable wireless mouse\",\r
+
+    \  \"mrp\": 1299,\r
+
+    \  \"sellingPrice\": 999,\r
+
+    \  \"brand\": \"Logitech\",\r
+
+    \  \"image\": \"https://example.com/mouse-pro.jpg\",\r
+
+    \  \"categoryId\": 1,\r
+
+    \  \"storeId\": 1\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{store manager}}"
+order: 4000

@@ -1,0 +1,29 @@
+$kind: http-request
+url: http://localhost:5000/api/stores/1
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \  \"brand\": \"Pratik Mart Updated\",\r
+
+    \  \"description\": \"Updated description\",\r
+
+    \  \"storeType\": \"Retail\",\r
+
+    \  \"contact\": {\r
+
+    \    \"address\": \"Baner, Pune\",\r
+
+    \    \"phone\": \"8888888888\",\r
+
+    \    \"email\": \"updated@test.com\"\r
+
+    \  }\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{store Admin}}"
+order: 6000

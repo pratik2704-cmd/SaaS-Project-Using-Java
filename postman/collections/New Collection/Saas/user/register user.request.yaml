@@ -1,0 +1,19 @@
+$kind: http-request
+url: http://localhost:5000/auth/signup
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"fullName\": \"Root Admin\",\r
+
+    \  \"email\": \"admin@test.com\",\r
+
+    \  \"password\": \"Pass@1234\",\r
+
+    \  \"phone\": \"9999999999\",\r
+
+    \  \"role\": \"ROLE_STORE_MANAGER\"\r
+
+    }"
+order: 1000

@@ -1,0 +1,29 @@
+$kind: http-request
+url: http://localhost:5000/api/branches/1
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \  \"name\": \"Pune Baner Branch\",\r
+
+    \  \"address\": \"Baner Road, Pune\",\r
+
+    \  \"phone\": \"8888888888\",\r
+
+    \  \"email\": \"baner.branch@test.com\",\r
+
+    \  \"openTime\": \"10:00:00\",\r
+
+    \  \"closeTime\": \"22:00:00\",\r
+
+    \  \"workingDays\": [\"MONDAY\", \"TUESDAY\", \"WEDNESDAY\", \"THURSDAY\", \"FRIDAY\"],\r
+
+    \  \"storeId\": 1\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{store manager}}"
+order: 4000

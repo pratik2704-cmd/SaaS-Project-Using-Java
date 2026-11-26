@@ -1,0 +1,8 @@
+name: Globals
+values:
+  - key: store Admin
+    enabled: true
+    secret: true
+  - key: store manager
+    enabled: true
+    secret: true

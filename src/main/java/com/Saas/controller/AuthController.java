@@ -26,7 +26,7 @@ public class AuthController {
     }
 
 	
-	//localhost:8080/auth/signup	
+	//localhost:5000/auth/signup	
 	@PostMapping("/signup")
 	public ResponseEntity<AuthResponse> signupHandler(
 			@RequestBody UserDto userDto

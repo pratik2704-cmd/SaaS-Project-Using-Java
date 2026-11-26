@@ -1,0 +1,41 @@
+$kind: http-request
+url: http://localhost:5000/api/branches
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\": \"Pune Main Branch\",\r
+
+    \    \"address\": \"FC Road, Pune\",\r
+
+    \    \"phone\": \"9999999999\",\r
+
+    \    \"email\": \"pune.branch@test.com\",\r
+
+    \    \"workingDays\": [\r
+
+    \        \"MONDAY\",\r
+
+    \        \"TUESDAY\",\r
+
+    \        \"WEDNESDAY\",\r
+
+    \        \"THURSDAY\",\r
+
+    \        \"FRIDAY\",\r
+
+    \        \"SATURDAY\"\r
+
+    \    ],\r
+
+    \    \"openTime\": \"09:00:00\",\r
+
+    \    \"closeTime\": \"21:00:00\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{store manager}}"
+order: 1000

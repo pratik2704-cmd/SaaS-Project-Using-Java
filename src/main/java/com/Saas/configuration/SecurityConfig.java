@@ -30,6 +30,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers("/api/super-admin/**").hasRole("ADMIN")
+                                .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/**").authenticated()
                                 .anyRequest().permitAll())
                 .addFilterBefore(

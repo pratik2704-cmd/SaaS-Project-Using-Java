@@ -1,5 +1,7 @@
 package com.Saas.mapper;
 
+import java.time.LocalDateTime;
+
 import com.Saas.model.Store;
 import com.Saas.model.User;
 import com.Saas.payload.dto.StoreDTO;
@@ -42,8 +44,8 @@ public class StoreMapper {
         store.setDescription(storeDTO.getDescription());
         store.setStoreAdmin(storeAdmin);
         store.setContact(storeDTO.getContact());
-        store.setCreatedAt(storeDTO.getCreatedAt());
-        store.setUpdatedAt(storeDTO.getUpdatedAt());
+        store.setCreatedAt(LocalDateTime.now());
+        store.setUpdatedAt(LocalDateTime.now());
 
         return store;
     }

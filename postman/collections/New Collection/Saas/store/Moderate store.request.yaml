@@ -1,0 +1,10 @@
+$kind: http-request
+url: http://localhost:5000/api/stores/1/moderate?status=ACTIVE
+method: PUT
+queryParams:
+  status: ACTIVE
+auth:
+  type: bearer
+  credentials:
+    token: "{{store Admin}}"
+order: 7000

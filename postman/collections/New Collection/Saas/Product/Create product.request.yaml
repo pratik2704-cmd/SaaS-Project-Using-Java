@@ -1,0 +1,31 @@
+$kind: http-request
+url: http://localhost:5000/api/products
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"name\": \"Wireless Mouse\",\r
+
+    \  \"sku\": \"MOUSE-001\",\r
+
+    \  \"description\": \"2.4GHz wireless optical mouse\",\r
+
+    \  \"mrp\": 999,\r
+
+    \  \"sellingPrice\": 799,\r
+
+    \  \"brand\": \"Logitech\",\r
+
+    \  \"image\": \"https://example.com/mouse.jpg\",\r
+
+    \  \"categoryId\": 1,\r
+
+    \  \"storeId\": 1\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{store manager}}"
+order: 1000

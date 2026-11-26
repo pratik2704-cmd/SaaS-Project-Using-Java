@@ -1,0 +1,8 @@
+$kind: http-request
+url: http://localhost:5000/api/stores/employee
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{store Admin}}"
+order: 5000

@@ -28,8 +28,23 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public StoreDTO createStore(StoreDTO storeDto, User user) {
+
+        if (user == null) {
+            throw new RuntimeException("User is not authenticated");
+        }
+
         Store store = StoreMapper.toEntity(storeDto, user);
-        return StoreMapper.toDto(storeRepository.save(store));
+
+        // Explicitly assign Store owner
+        store.setStoreAdmin(user);
+
+        Store savedStore = storeRepository.save(store);
+
+        System.out.println("Store ID: " + savedStore.getId());
+        System.out.println("Store Admin ID: " +
+                savedStore.getStoreAdmin().getId());
+
+        return StoreMapper.toDto(savedStore);
     }
 
     @Override

@@ -1,0 +1,10 @@
+$kind: http-request
+url: http://localhost:5000/api/products/store/1/search?keyword=mouse
+method: GET
+queryParams:
+  keyword: mouse
+auth:
+  type: bearer
+  credentials:
+    token: "{{store manager}}"
+order: 3000
